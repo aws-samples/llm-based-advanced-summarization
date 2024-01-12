@@ -4,6 +4,7 @@ import boto3
 from botocore.config import Config
 from technique.stuff_it import StuffIt
 from technique.map_reduce import MapReduce
+from technique.auto_refine import AutoRefine
 from type.step import Step
 import time
 
@@ -31,6 +32,23 @@ def map_reduce():
   results: dict = _wrap_in_duration(doc, map_reduce_client.map_reduce)
   return jsonify(_format_results(results))
 
+@app.route('/auto-refine', methods=['POST'])
+def auto_refine():
+  data: dict = request.json
+  doc: str = data['textToSummarize']
+
+  prompt_options = {}
+  prompt_options['prompt_type'] = "summary"
+  prompt_options['format_type'] = "narrative"
+  prompt_options['manual_guidance'] = ""
+  prompt_options['style_guide'] = ""
+
+  # Because auto_refine uses recursion, it's easier to reinitialize the object each call 
+  # so that the steps are reset at the API call level.
+  auto_refine_client: AutoRefine = AutoRefine(bedrock_client)
+
+  results: dict = auto_refine_client.auto_refine(doc, prompt_options, AUTO_REFINE=True)
+  return jsonify(_format_results(results))
 
 ########################
 # Helper functions
