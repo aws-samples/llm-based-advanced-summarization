@@ -1,10 +1,15 @@
 import { CircularProgress, Grid, LinearProgress, Typography } from "@mui/material";
 
-function ProgressView() {
+
+export interface LoadingProgressProps {
+  progress: number;
+}
+
+function LoadingProgress({ progress }: LoadingProgressProps) {
   return (
     <Grid container>
       <Grid item xs={12}>
-          <LinearProgress variant="determinate" value={20} />
+          <LinearProgress />
       </Grid>
       <Grid item xs={12} spacing={2} sx={{ 
         background: '#f7fafd', // slightly darker color
@@ -22,4 +27,4 @@ function ProgressView() {
   )
 }
 
-export default ProgressView;
+export default LoadingProgress;

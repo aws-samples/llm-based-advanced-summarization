@@ -1,20 +1,23 @@
-import SummarizationSteps from './SummarizationSteps';
-import SummarizationResultsContent from './SummarizationResultsContent';
+import { Grid, Typography } from "@mui/material";
 
-export interface SummarizationResultsProps {
-  // activeTab: string;
-  summarizationOutput: string;
-  steps: any[];
-  resultsOrStepsActiveTab: number;
+export interface SummarizationResultsContentProp {
+  results: string;
 }
 
-function SummarizationResults({ summarizationOutput, steps, resultsOrStepsActiveTab }: SummarizationResultsProps) {
+
+function SummarizationResults({ results }: SummarizationResultsContentProp) {
   return (
-    <div>
-      { resultsOrStepsActiveTab == 0 && <SummarizationResultsContent results={summarizationOutput} /> }
-      {/* { resultsOrStepsActiveTab == 0 && <ProgressView /> }  */}
-      { resultsOrStepsActiveTab == 1 && <SummarizationSteps steps={steps} /> }
-    </div>
+    <Grid item xs={12} sx={{ 
+      background: '#f7fafd', // slightly darker color
+      display: 'flex',
+      alignItems: 'left',
+      justifyContent: 'left',
+      zIndex: 1000, // place above other content
+      height: '68vh',
+      padding: '20px'
+    }}>
+      <p> <Typography>{ results } </Typography></p>
+    </Grid>
   )
 }
 

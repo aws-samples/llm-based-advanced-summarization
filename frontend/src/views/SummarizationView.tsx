@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import Grid from '@mui/material/Grid';
-import SummarizationForm from '../components/SummarizationForm';
-import SummarizationResults from '../components/SummarizationResults';
+import InputFormContainer from '../containers/InputFormContainer';
+import ResultsContainer from '../containers/ResultsContainer';
 import ProgressStepper from '../components/ProgressStepper';
 import CustomTabs from '../components/CustomTabs';
 import { SummarizationType } from '../types/SummarizationType';
@@ -30,6 +30,7 @@ function SummarizationView() {
   const [summarizationStep, setSummarizationStep] = useState<SummarizationStep[]>([]);
   const [method, setMethod] = useState<SummarizationType>(SummarizationType.STUFF_IT);
   const [selectedFiles, setSelectedFiles] = useState<File[]>([])
+  const [loadingProgress, setLoadingProgress] = useState<number>(0);
 
   const clearResults = () => {
     setStepperStep(0)
@@ -54,7 +55,7 @@ function SummarizationView() {
             onChange={setTextOrFileActiveTab} 
             tabs={textOrFileTabs}
           />
-          <SummarizationForm 
+          <InputFormContainer 
             activeTab={textOrFileActiveTab} 
             setSummarizationOutput={setSummarizationOutput} 
             setSteps={setSummarizationStep} 
@@ -62,6 +63,7 @@ function SummarizationView() {
             selectedFiles={selectedFiles}
             setSelectedFiles={setSelectedFiles}
             setStepperStep={setStepperStep}
+            setLoadingProgress={setLoadingProgress}
           />
         </Grid>
         <Grid item xs={8} sx={{ border: '1px solid #ddd' }}>
@@ -77,10 +79,11 @@ function SummarizationView() {
               <Button variant='outlined' size="small" onClick={clearResults}>Clear Results</Button>
             </Grid>
           </Grid>
-           <SummarizationResults 
+           <ResultsContainer 
               summarizationOutput={summarizationOutput} 
               steps={summarizationStep}
               resultsOrStepsActiveTab={resultsOrStepsActiveTab}
+              progress={loadingProgress}
             />
         </Grid>
       </Grid>

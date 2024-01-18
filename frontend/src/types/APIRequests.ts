@@ -6,7 +6,7 @@ export interface SingleInputSummarizationRequest {
 export interface MultiDocSummarizationRequest {
   uploadLocation: string
   descriptionOfDocuments: string,
-  questions: string[]
+  questions: string
 }
 
 export interface UploadDocsRequest {
