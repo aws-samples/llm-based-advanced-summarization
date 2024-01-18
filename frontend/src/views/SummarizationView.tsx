@@ -31,6 +31,7 @@ function SummarizationView() {
   const [method, setMethod] = useState<SummarizationType>(SummarizationType.STUFF_IT);
   const [selectedFiles, setSelectedFiles] = useState<File[]>([])
   const [loadingProgress, setLoadingProgress] = useState<number>(0);
+  const [time, setTime] = useState<string>('');
 
   const clearResults = () => {
     setStepperStep(0)
@@ -39,7 +40,7 @@ function SummarizationView() {
   }
 
   return (
-      <Grid container alignItems="stretch" >
+      <Grid container sx={{ height: '80vh' }} >
         <Grid item xs={12} sx={{padding: '8px'}}>
           <AWSAppBar />
         </Grid>
@@ -64,6 +65,7 @@ function SummarizationView() {
             setSelectedFiles={setSelectedFiles}
             setStepperStep={setStepperStep}
             setLoadingProgress={setLoadingProgress}
+            setTime={setTime}
           />
         </Grid>
         <Grid item xs={8} sx={{ border: '1px solid #ddd' }}>
@@ -84,6 +86,7 @@ function SummarizationView() {
               steps={summarizationStep}
               resultsOrStepsActiveTab={resultsOrStepsActiveTab}
               progress={loadingProgress}
+              time={time}
             />
         </Grid>
       </Grid>

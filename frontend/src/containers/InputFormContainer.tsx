@@ -20,6 +20,7 @@ export interface SummarizationFormProps {
   setSelectedFiles: Dispatch<SetStateAction<File[]>>;
   setStepperStep: Dispatch<SetStateAction<number>>;
   setLoadingProgress: Dispatch<SetStateAction<number>>;
+  setTime: Dispatch<SetStateAction<string>>;
 }
 
 
@@ -31,7 +32,7 @@ interface SummarizationFormValues {
 }
 
 
-function InputFormContainer({ activeTab, setSummarizationOutput, setSteps, method, selectedFiles, setSelectedFiles, setStepperStep, setLoadingProgress }: SummarizationFormProps) {
+function InputFormContainer({ activeTab, setSummarizationOutput, setSteps, method, selectedFiles, setSelectedFiles, setStepperStep, setLoadingProgress, setTime }: SummarizationFormProps) {
 
   const { register, handleSubmit, reset }  = useForm<SummarizationFormValues>({
     defaultValues: {
@@ -85,6 +86,7 @@ function InputFormContainer({ activeTab, setSummarizationOutput, setSteps, metho
     
     setSummarizationOutput(response.results);
     setSteps(response.steps);
+    setTime(response.time);
     setStepperStep(1);
 
     // Set loading progress back to zero so state updates when you clear the input.
@@ -96,7 +98,7 @@ function InputFormContainer({ activeTab, setSummarizationOutput, setSteps, metho
   const onInputCleared = async () => {
     setSelectedFiles([]);
     setStepperStep(0);
-    
+
     reset({ 
       textToSummarize: '',
       questions: '',
@@ -107,10 +109,10 @@ function InputFormContainer({ activeTab, setSummarizationOutput, setSteps, metho
   
   return (
     <form noValidate onSubmit={handleSubmit(onFormSubmit)}> 
-      <Grid container spacing={18} sx={{ display: 'flex', justifyContent: 'space-between' }}>
-        <Grid item xs={12}>
+      <Grid container direction='column' sx={{ height: '100%', display: 'flex' }}>
+        <Grid item xs sx={{ flexGrow: 1 }}>
           {/* Based on the tab selected, we'll display either the past text  */}
-          <FormControl fullWidth size="medium">
+          <FormControl fullWidth size="medium" sx={{ height: '100%', overflow: 'auto'}}>
             {
               activeTab === 0 && (
                 <PasteTextInput inputFieldName={'textToSummarize'} inputFormRegister={register} />
@@ -128,7 +130,7 @@ function InputFormContainer({ activeTab, setSummarizationOutput, setSteps, metho
             }
           </FormControl>
         </Grid>
-        <Grid item  xs={12}  spacing={8} sx={{ display: 'flex', justifyContent: 'space-between', margin: '8px' }}>
+        <Grid item  xs={12} sx={{ display: 'flex', justifyContent: 'space-between', padding: '8px' }}>
           <Button variant="outlined" onClick={onInputCleared}>Clear Input</Button>
           <Button type='submit' variant="contained">Submit</Button>
         </Grid>
