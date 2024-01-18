@@ -46,7 +46,7 @@ class MultiDoc(BaseAdvancedSummarization):
           break #limit for testing
         
         #print ("Asking the LLM to find extract answers from this doc:",doc)
-        questions_prompt = self.get_prompt(docs[doc],"reporter","list", question, "",docs_description)
+        questions_prompt = self.get_prompt(docs[x],"reporter","list", question, "",docs_description)
         prompt2quetion_doc[questions_prompt] = (question,doc) 
         prompts.append(questions_prompt)
         # Add the question prompt as a step in the calculation.
@@ -125,8 +125,9 @@ class MultiDoc(BaseAdvancedSummarization):
       answers[prompts2question[prompt]] = answer
       self.add_step('Compile answers', prompts2question[prompt], answer) 
 
-    self.add_step('Add answers', 'input is from the questions and input documents', answers) 
-    return answers
+    response: str = ''.join([f"{key}\n\n{value}" for key, value in answers.items()])
+    self.add_step('Add answers', 'input is from the questions and input documents', response) 
+    return response
   
   # Yield successive n-sized chunks from lst.
   # This is a helper function for the multidoc summarization function.

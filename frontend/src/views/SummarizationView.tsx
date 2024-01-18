@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import Grid from '@mui/material/Grid';
 import SummarizationForm from '../components/SummarizationForm';
-import Typography from '@mui/material/Typography';
-import { Button } from '@mui/material';
 import SummarizationResults from '../components/SummarizationResults';
 import ProgressStepper from '../components/ProgressStepper';
 import CustomTabs from '../components/CustomTabs';
+import { TextField } from '@mui/material';
+import { SummarizationStep } from '../api/ApiService';
 
 export enum SummarizationType {
   STUFF_IT = "Stuff It",
@@ -24,29 +24,67 @@ const resultsOrStepsTabs = [
   { name: "Steps", value: "steps" }
 ];
 
+const methods: string[] = [
+  SummarizationType.STUFF_IT.toString(),
+    SummarizationType.MAP_REDUCE.toString(),
+    SummarizationType.AUTO_REFINE.toString(),
+    SummarizationType.MULTI_DOC.toString()
+]
+
 
 function SummarizationView() {
 
   const [textOrFileActiveTab, setTextOrFileActiveTab] = useState<number>(0);
   const [resultsOrStepsActiveTab, setResultsOrStepsActiveTab] = useState<number>(0);
+  const [stepperStep, setStepperStep] = useState<number>(0);
   const [summarizationOutput, setSummarizationOutput] = useState<string>('');
-  const [summarizationStep, setSummarizationStep] = useState<any[]>([]);
+  const [summarizationStep, setSummarizationStep] = useState<SummarizationStep[]>([]);
+  const [method, setMethod] = useState<SummarizationType>(SummarizationType.STUFF_IT);
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([])
+
+  const handleMethodChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setMethod(event.target.value as SummarizationType);
+  };
 
   return (
       <Grid container alignItems="stretch" >
-        <Grid item xs={4} sx={{ justifyContent: 'center', verticalAlign: "bottom" }}> 
-          <h2><Typography sx={{fontSize: 24}}>Summarization: Stuff-It</Typography></h2>
+        <Grid item xs={4} sx={{ justifyContent: 'center', display: 'flex', flexDirection: 'column', verticalAlign: "bottom" }}> 
+          <TextField select defaultValue={methods[0]} SelectProps={{native: true}} onChange={handleMethodChange} label="Summarization Method">
+            {
+              methods.map((method: string) => <option key={method} value={method}>{method}</option>)
+            }
+          </TextField>
         </Grid>
         <Grid item xs={8}> 
-          <ProgressStepper />
+          <ProgressStepper activeStep={stepperStep}/>
         </Grid>
         <Grid item xs={4} sx={{ border: '1px solid #ddd' }}>
-          <CustomTabs initialValue={textOrFileActiveTab} onChange={setTextOrFileActiveTab} tabs={textOrFileTabs}/>
-          <SummarizationForm activeTab={textOrFileActiveTab} setSummarizationOutput={setSummarizationOutput} setSteps={setSummarizationStep}/>
+          <CustomTabs 
+            initialValue={textOrFileActiveTab} 
+            onChange={setTextOrFileActiveTab} 
+            tabs={textOrFileTabs}
+          />
+          <SummarizationForm 
+            activeTab={textOrFileActiveTab} 
+            setSummarizationOutput={setSummarizationOutput} 
+            setSteps={setSummarizationStep} 
+            method={method} 
+            selectedFiles={selectedFiles}
+            setSelectedFiles={setSelectedFiles}
+            setStepperStep={setStepperStep}
+          />
         </Grid>
         <Grid item xs={8} sx={{ border: '1px solid #ddd' }}>
-          <CustomTabs initialValue={resultsOrStepsActiveTab} onChange={setResultsOrStepsActiveTab} tabs={resultsOrStepsTabs}/>
-          <SummarizationResults summarizationOutput={summarizationOutput} steps={summarizationStep} />
+          <CustomTabs 
+            initialValue={resultsOrStepsActiveTab} 
+            onChange={setResultsOrStepsActiveTab} 
+            tabs={resultsOrStepsTabs}
+          />
+           <SummarizationResults 
+              summarizationOutput={summarizationOutput} 
+              steps={summarizationStep}
+              resultsOrStepsActiveTab={resultsOrStepsActiveTab}
+            />
         </Grid>
       </Grid>
   )

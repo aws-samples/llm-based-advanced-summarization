@@ -1,5 +1,6 @@
 import json
 from flask import Flask, request, jsonify
+from flask_cors import CORS, cross_origin
 import boto3
 from botocore.config import Config
 from technique.stuff_it import StuffIt
@@ -12,17 +13,17 @@ import pickle
 import os
 import uuid
 
-UPLOAD_FOLDER = 'documents'
-# This demo only allows txt files. You could upload anything you want, you just have to normalize
-# it into text first.
-ALLOWED_EXTENSIONS = {'txt'}
-
-app = Flask(__name__)
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-
-# Every time you startup the server, delete the old documents folder and recreate it.
+# Create a location to upload documents.
+UPLOAD_FOLDER: str = 'documents'
 if not os.path.exists(UPLOAD_FOLDER):
   os.makedirs(UPLOAD_FOLDER)
+
+app = Flask(__name__)
+
+cors = CORS(app)
+app.config['CORS_HEADERS'] = 'Content-Type'
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
 
 # Increase the standard time out limits in boto3, because Bedrock may take a while to respond to large requests.
 my_config = Config(connect_timeout=60*3, read_timeout=60*3)
@@ -34,23 +35,37 @@ map_reduce_client: MapReduce = MapReduce(bedrock_client)
 multi_doc_client: MultiDoc = MultiDoc(bedrock_client)
 
 @app.route('/stuff-it',  methods=['POST'])
+@cross_origin()
 def stuff_it():
   data: dict = request.json
-  doc: str = data['textToSummarize']
+  doc: str = _get_doc_from_request(data)
+
+  if not doc: 
+    return jsonify({'error': 'No text to summarize provided'})
+  
   results: dict = _wrap_in_duration(doc, stuff_it_client.stuff_it)
   return jsonify(_format_results(results))
 
 @app.route('/map-reduce', methods=['POST'])
+@cross_origin()
 def map_reduce():
   data: dict = request.json
-  doc: str = data['textToSummarize']
+  doc: str = _get_doc_from_request(data)
+  
+  if not doc: 
+    return jsonify({'error': 'No text to summarize provided'})
+  
   results: dict = _wrap_in_duration(doc, map_reduce_client.map_reduce)
   return jsonify(_format_results(results))
 
 @app.route('/auto-refine', methods=['POST'])
+@cross_origin()
 def auto_refine():
   data: dict = request.json
-  doc: str = data['textToSummarize']
+  doc: str = _get_doc_from_request(data)
+  
+  if not doc: 
+    return jsonify({'error': 'No text to summarize provided'})
 
   prompt_options = {}
   prompt_options['prompt_type'] = "summary"
@@ -66,11 +81,12 @@ def auto_refine():
   return jsonify(_format_results(results))
 
 @app.route('/multi-doc', methods=['POST'])
+@cross_origin()
 def multi_doc():
   data: dict = request.json
   file_location: list[str] = data['uploadLocation']
   description_of_documents: str = data['descriptionOfDocuments']
-  questions_about_docs: list[str] = data['questionsAboutDocs']
+  questions_about_docs: list[str] = data['questions'].split(',') if data['questions'] != '' else ['']
 
   docs: list[str] = _get_docs_from_filepath(file_location)
   results: dict = multi_doc_client.multi_doc(docs, questions_about_docs, description_of_documents)
@@ -82,11 +98,12 @@ def multi_doc():
 # returns the path to the file to be used in subsequent calls.
 #####
 @app.route('/upload-docs', methods=['POST'])
+@cross_origin()
 def upload_many_docs():
-  if 'file' not in request.files:
+  if 'files' not in request.files:
     return jsonify({ 'error': 'No file uploaded' })
   
-  files = request.files.getlist("file")
+  files = request.files.getlist("files")
   
   documents: list[str] = []
 
@@ -99,9 +116,7 @@ def upload_many_docs():
       documents.append(text_data)
   
   result_path: str = _write_docs_to_file(documents)
-  return jsonify({ 'file_path': result_path })
-
-
+  return jsonify({ 'uploadLocation': result_path })
 
 
 ########################
@@ -135,3 +150,12 @@ def _write_docs_to_file(docs: list[str]) -> str:
   with open(path, 'wb') as f:
     pickle.dump(docs, f)
   return path
+
+def _get_doc_from_request(request: dict) -> str:
+  if 'uploadLocation' in request and request['uploadLocation'] != '':
+    file_location: str = request['uploadLocation']
+    return _get_docs_from_filepath(file_location)[-1] # In case there's multiple docs, just use the last one one.
+  elif 'textToSummarize' in request:
+    return request['textToSummarize']
+  else: 
+    return None
