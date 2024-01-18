@@ -9,10 +9,6 @@ export interface SummarizationResultsProps {
   resultsOrStepsActiveTab: number;
 }
 
-export interface SummarizationStepsProps {
-  results: string[];
-}
-
 export interface SummarizationResultsContentProp {
   results: string;
 }

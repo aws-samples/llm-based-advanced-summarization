@@ -22,6 +22,7 @@ function CustomTabs(props: CustomTabsProps) {
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
     props.onChange(newValue);
+    event.preventDefault()
   };
 
   return (

@@ -8,9 +8,10 @@ import Grid from '@mui/material/Grid'
 import ArrowCircleUp from '@mui/icons-material/ArrowCircleUp';
 import { ButtonBase, Typography } from '@mui/material';
 import React, { Dispatch, SetStateAction } from 'react';
-import APIService, { SummarizationResponse, SingleInputSummarizationRequest, MultiDocSummarizationRequest, UploadDocsResponse } from '../api/ApiService';
-import { SummarizationType } from '../views/SummarizationView';
-
+import APIService from '../api/ApiService';
+import { SummarizationType } from '../types/SummarizationType';
+import { SummarizationResponse, UploadDocsResponse } from '../types/APIResponses';
+import { MultiDocSummarizationRequest, SingleInputSummarizationRequest } from '../types/APIRequests';
 
 export interface SummarizationFormProps {
   activeTab: number;

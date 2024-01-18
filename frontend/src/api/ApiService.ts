@@ -1,3 +1,5 @@
+import { MultiDocSummarizationRequest, SingleInputSummarizationRequest, UploadDocsRequest } from "../types/APIRequests";
+import { SummarizationResponse, UploadDocsResponse } from "../types/APIResponses";
 
 
 const SERVER = 'localhost:5000';
@@ -6,37 +8,6 @@ const STUFF_IT_URL = '/stuff-it';
 const MAP_REDUCE = '/map-reduce';
 const AUTO_REFINE = '/auto-refine';
 const MULTI_DOC = '/multi-doc'
-
-export interface SingleInputSummarizationRequest {
-  textToSummarize?: string,
-  uploadLocation?: string
-}
-
-export interface MultiDocSummarizationRequest {
-  uploadLocation: string
-  descriptionOfDocuments: string,
-  questions: string[]
-}
-
-export interface UploadDocsRequest {
-  files: File[],
-}
-
-export interface UploadDocsResponse {
-  uploadLocation: string
-}
-
-export interface SummarizationStep {
-  action: string;
-  input: string;
-  result: string;
-}
-
-export interface SummarizationResponse {
-  results: string;
-  steps: SummarizationStep[];
-  time: string;
-}
 
 class APIService {
 

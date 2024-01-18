@@ -5,14 +5,8 @@ import SummarizationResults from '../components/SummarizationResults';
 import ProgressStepper from '../components/ProgressStepper';
 import CustomTabs from '../components/CustomTabs';
 import { TextField } from '@mui/material';
-import { SummarizationStep } from '../api/ApiService';
-
-export enum SummarizationType {
-  STUFF_IT = "Stuff It",
-  MAP_REDUCE = "Map Reduce",
-  AUTO_REFINE = "Auto Refine",
-  MULTI_DOC = "Multi Doc"
-}
+import { SummarizationType } from '../types/SummarizationType';
+import SummarizationStep from '../types/SummarizationStep';
 
 const textOrFileTabs = [
   { name: "Paste Text", value: "text" },
