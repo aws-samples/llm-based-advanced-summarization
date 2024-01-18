@@ -62,6 +62,7 @@ function UploadFileInput({selectedFiles, setSelectedFiles, method, inputFormRegi
           </Grid>
         </ButtonBase>
       {
+        // If using Multi-doc there's some extra inputs we need.
         method == SummarizationType.MULTI_DOC && (
           <Grid item xs={12} sx={{padding: '10px'}}>
             <TextField

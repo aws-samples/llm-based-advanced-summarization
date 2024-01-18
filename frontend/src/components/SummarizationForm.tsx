@@ -32,7 +32,7 @@ interface SummarizationFormValues {
 
 function SummarizationForm({ activeTab, setSummarizationOutput, setSteps, method, selectedFiles, setSelectedFiles, setStepperStep }: SummarizationFormProps) {
 
-  const { register, handleSubmit }  = useForm<SummarizationFormValues>({
+  const { register, handleSubmit, reset }  = useForm<SummarizationFormValues>({
     defaultValues: {
       textToSummarize: '',
       uploadLocation: ''
@@ -91,18 +91,24 @@ function SummarizationForm({ activeTab, setSummarizationOutput, setSteps, method
     setStepperStep(1);
     return;
   }
+
+  const onInputCleared = async () => {
+    setSelectedFiles([]);
+    setStepperStep(0);
+    reset({ textToSummarize: '' })
+  }
   
   return (
     <form noValidate onSubmit={handleSubmit(onFormSubmit)}> 
       <Grid container spacing={18} sx={{ display: 'flex', justifyContent: 'space-between' }}>
         <Grid item xs={12}>
-          <FormControl fullWidth size="small">
+          <FormControl fullWidth size="medium">
             {activeTab === 0 && <PasteTextInput inputFieldName={'textToSummarize'} inputFormRegister={register} />}
             {activeTab === 1 && <UploadFileInput selectedFiles={selectedFiles} setSelectedFiles={setSelectedFiles} method={method} inputFormRegister={register} />}
           </FormControl>
         </Grid>
         <Grid item  xs={12}  spacing={8} sx={{ display: 'flex', justifyContent: 'space-between', margin: '8px' }}>
-          <Button variant="outlined">Clear Input</Button>
+          <Button variant="outlined" onClick={onInputCleared}>Clear Input</Button>
           <Button type='submit' variant="contained">Submit</Button>
         </Grid>
       </Grid>

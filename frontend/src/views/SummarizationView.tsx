@@ -8,6 +8,7 @@ import { SummarizationType } from '../types/SummarizationType';
 import SummarizationStep from '../types/SummarizationStep';
 import MethodSelector from '../components/MethodSelector';
 import AWSAppBar from '../components/AWSAppBar';
+import { Button } from '@mui/material';
 
 const textOrFileTabs = [
   { name: "Paste Text", value: "text" },
@@ -29,6 +30,12 @@ function SummarizationView() {
   const [summarizationStep, setSummarizationStep] = useState<SummarizationStep[]>([]);
   const [method, setMethod] = useState<SummarizationType>(SummarizationType.STUFF_IT);
   const [selectedFiles, setSelectedFiles] = useState<File[]>([])
+
+  const clearResults = () => {
+    setStepperStep(0)
+    setSummarizationOutput('')
+    setSummarizationStep([])
+  }
 
   return (
       <Grid container alignItems="stretch" >
@@ -58,11 +65,18 @@ function SummarizationView() {
           />
         </Grid>
         <Grid item xs={8} sx={{ border: '1px solid #ddd' }}>
-          <CustomTabs 
-            initialValue={resultsOrStepsActiveTab} 
-            onChange={setResultsOrStepsActiveTab} 
-            tabs={resultsOrStepsTabs}
-          />
+          <Grid container>
+            <Grid item xs={6} sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', height: '100%' }}>
+              <CustomTabs 
+                initialValue={resultsOrStepsActiveTab} 
+                onChange={setResultsOrStepsActiveTab} 
+                tabs={resultsOrStepsTabs}
+              />
+            </Grid>
+            <Grid item xs={6} sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', verticalAlign: 'center', height: 'auto', padding:'8px'}}>
+              <Button variant='outlined' size="small" onClick={clearResults}>Clear Results</Button>
+            </Grid>
+          </Grid>
            <SummarizationResults 
               summarizationOutput={summarizationOutput} 
               steps={summarizationStep}
