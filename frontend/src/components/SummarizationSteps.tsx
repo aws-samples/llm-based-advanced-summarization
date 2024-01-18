@@ -4,17 +4,17 @@ import SummarizationStep from "../types/SummarizationStep";
 
 
 export interface SummarizationStepsProps {
-  steps: SummarizationStep[];
+  steps: SummarizationStep  [];
 }
 
-function SummarizationSteps({ steps }: SummarizationStepsProps) {
+function SummarizationResultsSteps({ steps }: SummarizationStepsProps) {
   return (
     <Grid container spacing={1}>
       {
         steps.map((step, index) => (
           <Grid item xs={12} key={index}>
             <Accordion>
-              <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1a-content">
+              <AccordionSummary expandIcon={<ExpandMoreIcon/>} aria-controls="panel1a-content">
                 <Typography>{step.action}</Typography>
               </AccordionSummary>
               <AccordionDetails>
@@ -38,4 +38,4 @@ function SummarizationSteps({ steps }: SummarizationStepsProps) {
   )
 }
 
-export default SummarizationSteps;
+export default SummarizationResultsSteps;

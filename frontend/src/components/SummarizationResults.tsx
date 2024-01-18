@@ -17,8 +17,6 @@ export interface SummarizationResultsContentProp {
 function SummarizationResultsContent({ results }: SummarizationResultsContentProp) {
   return (
     <Grid item xs={12} sx={{ 
-      // bottom: 0,
-      // right: 0,
       background: '#f7fafd', // slightly darker color
       display: 'flex',
       alignItems: 'left',
@@ -35,7 +33,8 @@ function SummarizationResultsContent({ results }: SummarizationResultsContentPro
 function SummarizationResults({ summarizationOutput, steps, resultsOrStepsActiveTab }: SummarizationResultsProps) {
   return (
     <div>
-      { resultsOrStepsActiveTab == 0 && <SummarizationResultsContent  results={summarizationOutput} /> }
+      { resultsOrStepsActiveTab == 0 && <SummarizationResultsContent results={summarizationOutput} /> }
+      {/* { resultsOrStepsActiveTab == 0 && <ProgressView /> }  */}
       { resultsOrStepsActiveTab == 1 && <SummarizationSteps steps={steps} /> }
     </div>
   )

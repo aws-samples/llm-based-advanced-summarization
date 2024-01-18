@@ -1,17 +1,15 @@
 
 import { useForm } from 'react-hook-form';
 import FormControl from '@mui/material/FormControl';
-import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid'
-
-import ArrowCircleUp from '@mui/icons-material/ArrowCircleUp';
-import { ButtonBase, Typography } from '@mui/material';
-import React, { Dispatch, SetStateAction } from 'react';
+import { Dispatch, SetStateAction } from 'react';
 import APIService from '../api/ApiService';
 import { SummarizationType } from '../types/SummarizationType';
 import { SummarizationResponse, UploadDocsResponse } from '../types/APIResponses';
 import { MultiDocSummarizationRequest, SingleInputSummarizationRequest } from '../types/APIRequests';
+import UploadFileInput from './UploadFileInput';
+import PasteTextInput from './PasteTextInput';
 
 export interface SummarizationFormProps {
   activeTab: number;
@@ -23,116 +21,12 @@ export interface SummarizationFormProps {
   setStepperStep: Dispatch<SetStateAction<number>>;
 }
 
-export interface UploadFileInputProps {
-  selectedFiles: File[];
-  setSelectedFiles: Dispatch<SetStateAction<File[]>>;
-  method: SummarizationType;
-  inputFormRegister: any; // No typescript support for react hook form.
-}
-
-export interface PasteTextFormProps {
-  inputFieldName: string;
-  inputFormRegister: any; // No typescript support for react hook form.
-}
-
 
 interface SummarizationFormValues {
   textToSummarize?: string,
   uploadLocation?: string,
   descriptionOfDocuments?: string, 
   questions?: string[],
-}
-
-
-function PasteTextInput({ inputFieldName, inputFormRegister }: PasteTextFormProps) {
-  return (
-    <TextField
-      id="outlined-multiline-flexible"
-      label="Text To Summarize"
-      multiline
-      maxRows={16}
-      minRows={16}
-      sx={{ margin: '10px', padding: '10px' }}
-      {...inputFormRegister(inputFieldName)}
-    />
-  )
-}
-
-function UploadFileInput({selectedFiles, setSelectedFiles, method, inputFormRegister }: UploadFileInputProps) {
-  const fileInputRef = React.useRef<HTMLInputElement>(null);
-
-  // Helper click functions
-  const handleUploadClick = () => {
-    fileInputRef.current?.click();
-  };
-
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files) {
-      setSelectedFiles(selectedFiles.concat(Array.from(event.target.files)));
-    }
-  };
-  // End helper click functions
-  return (
-    // <Grid container>
-      <Grid container sx={{margin: '10px', padding: '10px'}}>
-        <ButtonBase onClick={handleUploadClick} style={{ width: '100%', display: 'block', padding: '10px', margin: '10px' }}>
-          <Grid sx={{ 
-            border: 1, 
-            borderColor: 'divider', 
-            borderStyle:"dashed", 
-            borderRadius:"4px", 
-            borderWidth:"3px",
-            alignItems: "center",
-            justifyContent: "center",
-            display: "grid",
-            padding: "20px",  }}
-          >
-            <input type='file' ref={fileInputRef} style={{display: 'none'}} multiple onChange={handleFileChange}/>
-            <Grid item xs={12} sx={{justifyContent: 'center', display: 'inline-flex', margin:'5px'}}>
-              <ArrowCircleUp sx={{fontSize:'60px', color: selectedFiles.length > 0 ? "green" : "gray" }}/>
-            </Grid>
-            <Grid item xs={12} sx={{justifyContent: 'center', display: 'inline-flex', margin:'5px'}}>
-              {
-                selectedFiles.length == 0 ? 
-                  <Typography>Click here to upload files.</Typography> 
-                  : (
-                    <ul>
-                      {selectedFiles.map((file: File, index) => (
-                        <li key={index}>{file.name}</li>
-                      ))}
-                    </ul>
-                  )
-              }
-            </Grid>
-            <Grid item xs={12} sx={{justifyContent: 'center', display: 'inline-flex', margin:'5px'}}>
-              <Button variant="contained" size="small">Upload File</Button>
-            </Grid>
-          </Grid>
-        </ButtonBase>
-      {
-        method == SummarizationType.MULTI_DOC && (
-          <Grid item xs={12} sx={{padding: '10px'}}>
-            <TextField
-              id="outlined-basic"
-              label="Description of Documents"
-              variant="outlined"
-              sx={{ padding: '5px' }}
-              {...inputFormRegister('descriptionOfDocuments')}
-              fullWidth
-            />
-            <TextField
-              id="outlined-basic"
-              label="Questions (comma separated)"
-              variant="outlined"
-              sx={{padding: '5px' }}
-              {...inputFormRegister('questions')}
-              fullWidth
-            />
-          </Grid>
-        )
-      }
-    </Grid>
-  )
 }
 
 
@@ -152,7 +46,6 @@ function SummarizationForm({ activeTab, setSummarizationOutput, setSteps, method
     if (selectedFiles.length > 0) {
       const uploadResponse: UploadDocsResponse  = await APIService.uploadDocuments({files: selectedFiles});
       data.uploadLocation = uploadResponse.uploadLocation;
-      // Reset the files after we've uploaded them.
     }
 
     // Multi doc is handled differently than the rest. Handle it separately and short circuit.
@@ -174,9 +67,6 @@ function SummarizationForm({ activeTab, setSummarizationOutput, setSteps, method
       textToSummarize: data.textToSummarize,
       uploadLocation: data.uploadLocation
     };
-
-    console.log(request)
-    console.log(data);
 
     let response: SummarizationResponse;
     switch (method) {
@@ -211,7 +101,8 @@ function SummarizationForm({ activeTab, setSummarizationOutput, setSteps, method
             {activeTab === 1 && <UploadFileInput selectedFiles={selectedFiles} setSelectedFiles={setSelectedFiles} method={method} inputFormRegister={register} />}
           </FormControl>
         </Grid>
-        <Grid item  xs={12}  sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+        <Grid item  xs={12}  spacing={8} sx={{ display: 'flex', justifyContent: 'space-between', margin: '8px' }}>
+          <Button variant="outlined">Clear Input</Button>
           <Button type='submit' variant="contained">Submit</Button>
         </Grid>
       </Grid>

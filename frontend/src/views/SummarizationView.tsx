@@ -4,9 +4,10 @@ import SummarizationForm from '../components/SummarizationForm';
 import SummarizationResults from '../components/SummarizationResults';
 import ProgressStepper from '../components/ProgressStepper';
 import CustomTabs from '../components/CustomTabs';
-import { TextField } from '@mui/material';
 import { SummarizationType } from '../types/SummarizationType';
 import SummarizationStep from '../types/SummarizationStep';
+import MethodSelector from '../components/MethodSelector';
+import AWSAppBar from '../components/AWSAppBar';
 
 const textOrFileTabs = [
   { name: "Paste Text", value: "text" },
@@ -17,13 +18,6 @@ const resultsOrStepsTabs = [
   { name: "Results", value: "results" },
   { name: "Steps", value: "steps" }
 ];
-
-const methods: string[] = [
-  SummarizationType.STUFF_IT.toString(),
-    SummarizationType.MAP_REDUCE.toString(),
-    SummarizationType.AUTO_REFINE.toString(),
-    SummarizationType.MULTI_DOC.toString()
-]
 
 
 function SummarizationView() {
@@ -36,18 +30,13 @@ function SummarizationView() {
   const [method, setMethod] = useState<SummarizationType>(SummarizationType.STUFF_IT);
   const [selectedFiles, setSelectedFiles] = useState<File[]>([])
 
-  const handleMethodChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setMethod(event.target.value as SummarizationType);
-  };
-
   return (
       <Grid container alignItems="stretch" >
+        <Grid item xs={12} sx={{padding: '8px'}}>
+          <AWSAppBar />
+        </Grid>
         <Grid item xs={4} sx={{ justifyContent: 'center', display: 'flex', flexDirection: 'column', verticalAlign: "bottom" }}> 
-          <TextField select defaultValue={methods[0]} SelectProps={{native: true}} onChange={handleMethodChange} label="Summarization Method">
-            {
-              methods.map((method: string) => <option key={method} value={method}>{method}</option>)
-            }
-          </TextField>
+          <MethodSelector setMethod={setMethod}/>
         </Grid>
         <Grid item xs={8}> 
           <ProgressStepper activeStep={stepperStep}/>
