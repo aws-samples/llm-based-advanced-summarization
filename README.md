@@ -15,6 +15,7 @@ Just want to dive in and start summarizing?  Open Examples.ipynb which shows how
   - simple_summarize.ipynb Includes two of the most simple, most common types of summarization, useful for basic tasks.
   - Data collection and cleaning.ipynb A utility notebook, for downloading and cleaning data in preparation for summarization.
   - sample texts/ a few sample documents of different lengths, already cleaned and ready to summarize.
+  - detect_attribution.ipynb a novel way to detect attributions at the sentence level, increasing user trust.
 
 ## Security
 
