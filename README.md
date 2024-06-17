@@ -7,6 +7,11 @@ In this repo, we examine four different methods of performing summarization.  We
   3) "auto refine" - ask the LLM to find gaps in its own summary, and fill them.
   4) "multi-doc" - sumarize multiple documents on the bases of guidance questions.
 
+We also have multiple elements that suport this kind of generative AI workload, and may be helpful for others as well.
+  1) A front end GUI, useful if you want to deploy this code as an interactive tool.
+  2) Prompt Evaluation, a suggested framework for using an LLM as Judge to measure accuracy.
+  3) Prompt Decomposition, how to break down prompts into multiple steps to solve for accuracy, cost, scale, and latency.
+
 Just want to dive in and start summarizing?  Open Examples.ipynb which shows how to use each kind of summarization.
 
 ### A brief look at the contents of this repo:
@@ -16,6 +21,8 @@ Just want to dive in and start summarizing?  Open Examples.ipynb which shows how
   - Data collection and cleaning.ipynb A utility notebook, for downloading and cleaning data in preparation for summarization.
   - sample texts/ a few sample documents of different lengths, already cleaned and ready to summarize.
   - detect_attribution.ipynb a novel way to detect attributions at the sentence level, increasing user trust.
+  - Prompt_evauluation - examples of how to build a framework for evaluation accuracy.  A more advanced version is in the prompt decompostion folder.
+  - Prompt Decomposition - examples of how to break down prompts into multiple steps to solve for accuracy, cost, scale, and latency.
 
 ## Security
 
